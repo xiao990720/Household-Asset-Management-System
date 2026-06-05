@@ -1,0 +1,6 @@
+{
+  "name": "NAS 个人暨家庭资产管理系统",
+  "description": "专为 NAS Docker 部署设计的轻量级多用户、多币种、多品类个人及家庭资产配置与安全可视化分析系统。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

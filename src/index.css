@@ -1,0 +1,289 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;750&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+body {
+  background-color: #0F172A;
+  color: #E2E8F0;
+  font-family: var(--font-sans);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Custom scrollbars for a clean high density view */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0F172A;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Light Theme Variable and Utilities Mapping Override */
+.light-theme {
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #FFFFFF;
+  --text-primary: #0F172A;
+  --text-secondary: #1E293B;
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+}
+
+.light-theme body {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+}
+
+/* Light mode backgrounds overriding ugly dark/slate panels on light canvas */
+.light-theme .bg-\[\#0F172A\] {
+  background-color: #F8FAFC !important;
+}
+
+.light-theme .bg-\[\#1E293B\] {
+  background-color: #FFFFFF !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02), 0 0 0 1px rgba(15, 23, 42, 0.05) !important;
+  border-color: #E2E8F0 !important;
+}
+
+.light-theme .bg-slate-900,
+.light-theme .bg-slate-950,
+.light-theme .bg-slate-900\/40,
+.light-theme .bg-slate-900\/60,
+.light-theme .bg-slate-900\/30 {
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+}
+
+/* Hardcoded specific container cards overrides */
+.light-theme #card-networth {
+  background-color: #ECFDF5 !important; /* Elegant Soft Mint Green background */
+  border-color: #A7F3D0 !important;
+  box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.03), 0 0 0 1px rgba(5, 150, 105, 0.1) !important;
+}
+.light-theme #card-networth .text-white {
+  color: #065F46 !important; /* Safe deep forest green text */
+}
+.light-theme #card-networth .text-emerald-400,
+.light-theme #card-networth .text-emerald-300,
+.light-theme #card-networth .text-emerald-400\/80 {
+  color: #047857 !important; /* Perfect contrast text */
+}
+.light-theme #card-networth .bg-\[\#10B981\]\/20 {
+  background-color: #D1FAE5 !important;
+  color: #065F46 !important;
+  border-color: #A7F3D0 !important;
+}
+
+.light-theme #card-total-liabilities {
+  background-color: #FEF2F2 !important; /* Premium soft crimson/rose alert warning background */
+  border-color: #FEE2E2 !important;
+  box-shadow: 0 4px 6px -1px rgba(220, 38, 38, 0.02), 0 0 0 1px rgba(220, 38, 38, 0.08) !important;
+}
+.light-theme #card-total-liabilities .text-rose-400,
+.light-theme #card-total-liabilities .text-rose-500\/75 {
+  color: #991B1B !important;
+}
+.light-theme #card-total-liabilities .bg-rose-950 {
+  background-color: #FEE2E2 !important;
+  color: #991B1B !important;
+  border-color: #FCA5A5 !important;
+}
+
+.light-theme .bg-[#10B981]\/15 {
+  background-color: rgba(16, 185, 129, 0.06) !important;
+}
+
+.light-theme .bg-indigo-950\/40,
+.light-theme .bg-indigo-950\/30 {
+  background-color: rgba(79, 70, 229, 0.05) !important;
+  border-color: #C7D2FE !important;
+}
+
+.light-theme .bg-indigo-650,
+.light-theme .bg-indigo-600 {
+  background-color: #4F46E5 !important;
+}
+
+.light-theme .bg-slate-850 {
+  background-color: #E2E8F0 !important;
+}
+
+/* Contrast adjustment for progress bar inner tracks inside taxonomy */
+.light-theme .h-1.bg-\[\#0F172A\] {
+  background-color: #E2E8F0 !important;
+}
+
+/* Core Alert banner overrides */
+.light-theme #financial-health-banner {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.01), 0 0 0 1px rgba(15, 23, 42, 0.05) !important;
+}
+.light-theme #financial-health-banner p {
+  color: currentColor !important;
+  opacity: 0.9 !important;
+}
+.light-theme #financial-health-banner .bg-slate-900 {
+  background-color: rgba(15, 23, 42, 0.06) !important;
+  color: inherit !important;
+  border-color: rgba(15, 23, 42, 0.1) !important;
+}
+
+.light-theme .text-emerald-400.bg-emerald-950\/30 {
+  color: #065F46 !important;
+  background-color: #ECFDF5 !important;
+  border-color: #A7F3D0 !important;
+}
+.light-theme .text-indigo-300.bg-indigo-950\/30 {
+  color: #3730A3 !important;
+  background-color: #EEF2FF !important;
+  border-color: #C7D2FE !important;
+}
+.light-theme .text-amber-400.bg-amber-950\/30 {
+  color: #92400E !important;
+  background-color: #FFFBEB !important;
+  border-color: #FDE68A !important;
+}
+.light-theme .text-rose-400.bg-rose-950\/30 {
+  color: #991B1B !important;
+  background-color: #FEF2F2 !important;
+  border-color: #FCA5A5 !important;
+}
+
+/* Category grid badges */
+.light-theme .text-emerald-400.bg-emerald-950\/20 {
+  color: #047857 !important;
+  background-color: #ECFDF5 !important;
+  border-color: #A7F3D0 !important;
+}
+.light-theme .text-rose-400.bg-rose-950\/20 {
+  color: #B91C1C !important;
+  background-color: #FEF2F2 !important;
+  border-color: #FCA5A5 !important;
+}
+
+/* Table rows & badges overrides */
+.light-theme tr:hover {
+  background-color: #F1F5F9 !important;
+}
+.light-theme .bg-amber-950\/40 {
+  background-color: #FEF3C7 !important;
+  color: #92400E !important;
+  border-color: #FDE68A !important;
+}
+.light-theme .bg-emerald-950\/40 {
+  background-color: #D1FAE5 !important;
+  color: #065F46 !important;
+  border-color: #A7F3D0 !important;
+}
+.light-theme .bg-rose-950\/45,
+.light-theme .bg-rose-950\/40 {
+  background-color: #FEE2E2 !important;
+  color: #991B1B !important;
+  border-color: #FCA5A5 !important;
+}
+
+/* Text color overrides */
+.light-theme .text-slate-100,
+.light-theme .text-slate-200,
+.light-theme .text-slate-250 {
+  color: #0F172A !important;
+}
+
+.light-theme .text-slate-350,
+.light-theme .text-slate-300 {
+  color: #1E293B !important;
+}
+
+.light-theme .text-slate-400 {
+  color: #475569 !important;
+}
+
+.light-theme .text-slate-550,
+.light-theme .text-slate-500 {
+  color: #64748B !important;
+}
+
+.light-theme .text-slate-655,
+.light-theme .text-slate-600 {
+  color: #475569 !important;
+}
+
+.light-theme .text-emerald-450,
+.light-theme .text-emerald-500 {
+  color: #10B981 !important;
+}
+
+.light-theme .hover\:text-slate-200:hover,
+.light-theme .hover\:text-slate-100:hover {
+  color: #0F172A !important;
+}
+
+/* Form inputs & selectivity visual polish */
+.light-theme input,
+.light-theme select,
+.light-theme textarea {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.01) !important;
+}
+.light-theme input::placeholder,
+.light-theme textarea::placeholder {
+  color: #94A3B8 !important;
+}
+.light-theme input:focus,
+.light-theme select:focus,
+.light-theme textarea:focus {
+  border-color: #4F46E5 !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1) !important;
+}
+.light-theme option {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+}
+
+/* Borders overrides */
+.light-theme .border-slate-800,
+.light-theme .border-slate-850,
+.light-theme .border-slate-755,
+.light-theme .border-slate-700\/85,
+.light-theme .border-slate-750 {
+  border-color: #E2E8F0 !important;
+}
+
+.light-theme .border-slate-900 {
+  border-color: #F1F5F9 !important;
+}
+
+.light-theme .border-indigo-900\/60,
+.light-theme .border-indigo-900\/35 {
+  border-color: #C7D2FE !important;
+}
+
+/* General button hovers */
+.light-theme .hover\:bg-slate-800:hover {
+  background-color: #E2E8F0 !important;
+}
+.light-theme .hover\:bg-slate-850:hover {
+  background-color: #CBD5E1 !important;
+}
+
+/* Scrollbars overrides */
+.light-theme ::-webkit-scrollbar-track {
+  background: #F8FAFC;
+}
+.light-theme ::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+}
+.light-theme ::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
