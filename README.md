@@ -1,5 +1,7 @@
 这是一个用 Google ai 生成的家庭资产管理系统
-Household Asset Management System
+# Household Asset Management System
+
+这个是在NAS上用docker部署
 
 
 
