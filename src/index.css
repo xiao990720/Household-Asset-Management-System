@@ -31,37 +31,133 @@ body {
 
 /* Light Theme Variable and Utilities Mapping Override */
 .light-theme {
-  --bg-primary: #F8FAFC;
-  --bg-secondary: #FFFFFF;
-  --text-primary: #0F172A;
-  --text-secondary: #1E293B;
-  background-color: #F8FAFC !important;
-  color: #0F172A !important;
+  /* Use subtle zinc/gray palette for a more premium, less clinical feel */
+  --bg-primary: #F4F4F5; /* Zinc 100 */
+  --bg-secondary: #FFFFFF; /* White */
+  --text-primary: #1D1D1F; /* Zinc 900 */
+  --text-secondary: #71717A; /* Zinc 500 */
+  background-color: #F4F4F5 !important;
+  color: #1D1D1F !important;
 }
 
 .light-theme body {
-  background-color: #F8FAFC !important;
-  color: #0F172A !important;
+  background-color: #F4F4F5 !important;
+  color: #1D1D1F !important;
 }
 
 /* Light mode backgrounds overriding ugly dark/slate panels on light canvas */
 .light-theme .bg-\[\#0F172A\] {
-  background-color: #F8FAFC !important;
+  background-color: #FFFFFF !important;
+  color: #1F2937 !important;
+  border: 1px solid #E4E4E7 !important;
 }
 
 .light-theme .bg-\[\#1E293B\] {
   background-color: #FFFFFF !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02), 0 0 0 1px rgba(15, 23, 42, 0.05) !important;
-  border-color: #E2E8F0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  border-color: #E4E4E7 !important;
 }
 
+/* Clean up all dark slate background variations, cards, and tables */
 .light-theme .bg-slate-900,
 .light-theme .bg-slate-950,
 .light-theme .bg-slate-900\/40,
 .light-theme .bg-slate-900\/60,
-.light-theme .bg-slate-900\/30 {
-  background-color: #F8FAFC !important;
-  border-color: #E2E8F0 !important;
+.light-theme .bg-slate-900\/65,
+.light-theme .bg-slate-900\/30,
+.light-theme .bg-slate-950\/80,
+.light-theme thead tr,
+.light-theme tr[class*="bg-slate-"],
+.light-theme div[class*="bg-slate-900"] {
+  background-color: #F9FAFB !important;
+  border-color: #E4E4E7 !important;
+  color: #1F2937 !important;
+}
+
+/* System instruction and backup card blocks background and text */
+.light-theme .bg-slate-900\/65 {
+  background-color: #F4F4F5 !important;
+  border-color: #E4E4E7 !important;
+  color: #3F3F46 !important;
+}
+
+/* Specific credential display helper box inside administrative authentication template */
+.light-theme .bg-slate-950.text-\[\#10B981\] {
+  background-color: #FFFFFF !important;
+  border-color: #E4E4E7 !important;
+  color: #10B981 !important;
+}
+
+/* Auth Panel Specific Header */
+.light-theme .bg-gradient-to-r.from-\[\#1B2230\].to-\[\#1E293B\] {
+  background: #F9FAFB !important;
+  border-bottom: 1px solid #E4E4E7 !important;
+}
+
+.light-theme .bg-slate-900\/65.border-slate-850 {
+  background-color: #F9FAFB !important;
+  border-color: #E4E4E7 !important;
+  color: #52525B !important;
+}
+
+/* Bulletproof border, divider, and hairline overrides to clear all black lines */
+.light-theme *,
+.light-theme *::before,
+.light-theme *::after,
+.light-theme [class*="border-slate-"],
+.light-theme [class*="divide-slate-"] > :not([hidden]) ~ :not([hidden]),
+.light-theme .border-slate-800,
+.light-theme .border-slate-850,
+.light-theme .border-slate-700,
+.light-theme .border-slate-900,
+.light-theme .border-slate-950,
+.light-theme .border-slate-700\/80,
+.light-theme .border-slate-700\/85,
+.light-theme .border-slate-750,
+.light-theme .border-slate-755,
+.light-theme .border-b,
+.light-theme .border-r,
+.light-theme .border-t,
+.light-theme .border-l,
+.light-theme .border,
+.light-theme .divide-y > :not([hidden]) ~ :not([hidden]),
+.light-theme .divide-slate-800 > :not([hidden]) ~ :not([hidden]),
+.light-theme .divide-slate-800\/80 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #E4E4E7 !important;
+}
+
+/* Buttons and file inputs override to block black button look */
+.light-theme .bg-slate-800,
+.light-theme [class*="bg-slate-800"],
+.light-theme button[class*="bg-slate-800"],
+.light-theme .file\:bg-\[\#1E293B\] {
+  background-color: #F3F4F6 !important;
+  color: #1F2937 !important;
+  border-color: #E4E4E7 !important;
+}
+
+.light-theme .bg-slate-800:hover,
+.light-theme [class*="bg-slate-800"]:hover,
+.light-theme button[class*="bg-slate-800"]:hover,
+.light-theme button[class*="hover:bg-slate-800"]:hover,
+.light-theme .hover\:bg-slate-800:hover {
+  background-color: #E5E7EB !important;
+  color: #111827 !important;
+}
+
+/* Native file upload button override */
+.light-theme input[type="file"]::file-selector-button {
+  background-color: #F3F4F6 !important;
+  color: #1F2937 !important;
+  border: 1px solid #E4E4E7 !important;
+  border-radius: 4px;
+}
+.light-theme input[type="file"]::file-selector-button:hover {
+  background-color: #E5E7EB !important;
+}
+
+.light-theme .hover\:bg-slate-900:hover {
+  background-color: #F9FAFB !important;
 }
 
 /* Hardcoded specific container cards overrides */
@@ -251,14 +347,7 @@ body {
   color: #0F172A !important;
 }
 
-/* Borders overrides */
-.light-theme .border-slate-800,
-.light-theme .border-slate-850,
-.light-theme .border-slate-755,
-.light-theme .border-slate-700\/85,
-.light-theme .border-slate-750 {
-  border-color: #E2E8F0 !important;
-}
+/* General border overrides handled at line 82 */
 
 .light-theme .border-slate-900 {
   border-color: #F1F5F9 !important;
