@@ -15,6 +15,7 @@ export interface Asset {
   remark: string;
   updatedAt: string;
   maturityDate?: string;
+  interestRate?: number;
   stockCode?: string;
   shares?: number;
   stockPrice?: number;

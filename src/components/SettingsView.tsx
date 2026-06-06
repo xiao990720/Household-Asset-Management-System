@@ -17,6 +17,7 @@ export default function SettingsView({ db, onSaveState }: SettingsViewProps) {
   const [newFundCurrency, setNewFundCurrency] = useState(() => db.settings.baseCurrency);
   const [newFundRemark, setNewFundRemark] = useState("后台直接录入资金");
   const [newFundMaturityDate, setNewFundMaturityDate] = useState("");
+  const [newFundInterestRate, setNewFundInterestRate] = useState<number | "">("");
   const [newFundDate, setNewFundDate] = useState(() => {
     const today = new Date();
     return today.toISOString().split("T")[0];
@@ -480,6 +481,7 @@ export default function SettingsView({ db, onSaveState }: SettingsViewProps) {
     setNewFundCurrency(asset.currency);
     setNewFundRemark(asset.remark || "");
     setNewFundMaturityDate(asset.maturityDate || "");
+    setNewFundInterestRate(asset.interestRate !== undefined ? asset.interestRate : "");
     setNewFundDate(asset.updatedAt);
     setNewFundStockCode(asset.stockCode || "");
     setNewFundShares(asset.shares !== undefined ? asset.shares : "");
@@ -493,6 +495,7 @@ export default function SettingsView({ db, onSaveState }: SettingsViewProps) {
     setNewFundAmount("");
     setNewFundRemark("后台直接录入资金");
     setNewFundMaturityDate("");
+    setNewFundInterestRate("");
     setNewFundDate(new Date().toISOString().split("T")[0]);
     setNewFundStockCode("");
     setNewFundShares("");
@@ -529,8 +532,8 @@ export default function SettingsView({ db, onSaveState }: SettingsViewProps) {
       return;
     }
 
-    if (newFundType === "deposit" && !newFundMaturityDate) {
-      alert("定期存款科目必须填写到期时间！");
+    if ((newFundType === "deposit" || newFundType === "liability") && !newFundMaturityDate) {
+      alert(`${ASSET_TYPES[newFundType].label}科目必须填写到期时间！`);
       return;
     }
 
@@ -568,7 +571,8 @@ export default function SettingsView({ db, onSaveState }: SettingsViewProps) {
             currency: newFundCurrency,
             remark: newFundRemark.trim(),
             updatedAt: newFundDate || new Date().toISOString().split("T")[0],
-            maturityDate: newFundType === "deposit" ? newFundMaturityDate : undefined,
+            maturityDate: (newFundType === "deposit" || newFundType === "liability") ? newFundMaturityDate : undefined,
+            interestRate: (newFundType === "deposit" || newFundType === "liability") && newFundInterestRate !== "" ? parseFloat(newFundInterestRate.toString()) : undefined,
             stockCode: isStockOrEquity ? newFundStockCode.trim() : undefined,
             shares: isStockOrEquity ? parseFloat(newFundShares as string) : undefined,
             stockPrice: isStockOrEquity ? parseFloat(newFundStockPrice as string) : undefined
@@ -594,7 +598,10 @@ export default function SettingsView({ db, onSaveState }: SettingsViewProps) {
         currency: newFundCurrency,
         remark: newFundRemark.trim(),
         updatedAt: newFundDate || new Date().toISOString().split("T")[0],
-        ...(newFundType === "deposit" ? { maturityDate: newFundMaturityDate } : {}),
+        ...((newFundType === "deposit" || newFundType === "liability") ? { 
+          maturityDate: newFundMaturityDate,
+          interestRate: newFundInterestRate !== "" ? parseFloat(newFundInterestRate.toString()) : undefined 
+        } : {}),
         ...(isStockOrEquity ? {
           stockCode: newFundStockCode.trim(),
           shares: parseFloat(newFundShares as string),
@@ -612,6 +619,7 @@ export default function SettingsView({ db, onSaveState }: SettingsViewProps) {
       setNewFundAmount("");
       setNewFundRemark("后台直接录入资金");
       setNewFundMaturityDate("");
+      setNewFundInterestRate("");
       setNewFundStockCode("");
       setNewFundShares("");
       setNewFundStockPrice("");
@@ -742,8 +750,13 @@ export default function SettingsView({ db, onSaveState }: SettingsViewProps) {
                         <div className="flex items-center gap-3 text-[10px] text-slate-500 mt-1.5 flex-wrap">
                           <span className="font-mono text-slate-450">开账日期: {asset.updatedAt}</span>
                           {asset.maturityDate && (
-                            <span className="text-amber-400 font-mono flex items-center gap-1 font-bold">
-                              到期时间: {asset.maturityDate}
+                            <span className={`${asset.type === "liability" ? "text-rose-400" : "text-amber-400"} font-mono flex items-center gap-1 font-bold`}>
+                              {asset.type === "liability" ? "还清日期" : "到期时间"}: {asset.maturityDate}
+                            </span>
+                          )}
+                          {asset.interestRate !== undefined && (
+                            <span className={`${asset.type === "liability" ? "text-rose-300" : "text-emerald-400"} font-mono flex items-center gap-1 font-bold`}>
+                              利率: {asset.interestRate}%
                             </span>
                           )}
                           {asset.stockCode && (
@@ -1004,31 +1017,58 @@ export default function SettingsView({ db, onSaveState }: SettingsViewProps) {
                     />
                   </div>
 
-                  {/* Conditional Maturity Date for Deposit */}
-                  {newFundType === "deposit" && (
-                    <div className="space-y-1 animate-fade-in text-amber-400">
-                      <label className="text-[10px] uppercase font-bold tracking-wider font-sans text-amber-400 block font-mono">到期时间 *</label>
-                      <input
-                        id="newfund-input-maturity"
-                        type="date"
-                        required
-                        value={newFundMaturityDate}
-                        onChange={e => setNewFundMaturityDate(e.target.value)}
-                        className="w-full px-2.5 py-1.5 text-xs rounded border border-amber-600 bg-[#1E293B] text-amber-200 focus:outline-none focus:border-amber-500 font-mono cursor-pointer"
-                      />
-                    </div>
+                  {/* Conditional Maturity Date and Interest Rate for Deposit or Liability (Mortgage) */}
+                  {(newFundType === "deposit" || newFundType === "liability") && (
+                    <>
+                      <div className="space-y-1 animate-fade-in">
+                        <label className={`text-[10px] uppercase font-bold tracking-wider font-sans block font-mono ${newFundType === "liability" ? "text-rose-400" : "text-amber-400"}`}>
+                          {newFundType === "liability" ? "贷款还清到期时间 *" : "存款到期时间 *"}
+                        </label>
+                        <input
+                          id="newfund-input-maturity"
+                          type="date"
+                          required
+                          value={newFundMaturityDate}
+                          onChange={e => setNewFundMaturityDate(e.target.value)}
+                          className={`w-full px-2.5 py-1.5 text-xs rounded border bg-[#1E293B] font-mono cursor-pointer ${
+                            newFundType === "liability" 
+                              ? "border-rose-700 text-rose-200 focus:border-rose-500" 
+                              : "border-amber-600 text-amber-200 focus:border-amber-500"
+                          }`}
+                        />
+                      </div>
+                      <div className="space-y-1 animate-fade-in">
+                        <label className={`text-[10px] uppercase font-bold tracking-wider font-sans block font-mono ${newFundType === "liability" ? "text-rose-400" : "text-emerald-400"}`}>
+                          {newFundType === "liability" ? "房贷执行年利率 (%)" : "存款年化利率 (%)"}
+                        </label>
+                        <input
+                          id="newfund-input-interest-rate"
+                          type="number"
+                          step="0.001"
+                          min="0"
+                          placeholder={newFundType === "liability" ? "例如: 3.25" : "例如: 2.75"}
+                          value={newFundInterestRate}
+                          onChange={e => setNewFundInterestRate(e.target.value === "" ? "" : parseFloat(e.target.value))}
+                          className={`w-full px-2.5 py-1.5 text-xs rounded border bg-[#1E293B] font-mono ${
+                            newFundType === "liability" 
+                              ? "border-rose-700 text-rose-200 focus:border-rose-500" 
+                              : "border-emerald-600/50 text-emerald-300 focus:border-emerald-500"
+                          }`}
+                        />
+                      </div>
+                    </>
                   )}
                 </div>
 
                 {/* Remark */}
                 <div className="space-y-1">
                   <label className="text-[10px] uppercase font-bold tracking-wider font-sans text-slate-400 block">
-                    备注等项目 {newFundType === "deposit" && <span className="text-amber-400">(定期存款推荐详记)</span>}
+                    备注等项目 {(newFundType === "deposit" || newFundType === "liability") && <span className="text-amber-400">({ASSET_TYPES[newFundType].label}推荐详记)</span>}
                   </label>
                   <input
                     id="newfund-input-remark"
                     type="text"
-                    placeholder={newFundType === "deposit" ? "例如：建设银行三年期大额存单，存期利率2.75%，或者特定到期事项" : "补充输入辅助识别，例如：账号末4位、币种兑换或特殊标记"}
+                    placeholder={(newFundType === "deposit" || newFundType === "liability") ? `例如：${newFundType === "liability" ? 'XX银行公积金组合贷款比例、利率变动模式或还清到期时间' : '建设银行三年期大额存单，存期利率2.75%等'}` : "补充输入辅助识别，例如：账号末4位、币种兑换或特殊标记"}
                     value={newFundRemark}
                     onChange={e => setNewFundRemark(e.target.value)}
                     className="w-full px-2.5 py-1.5 text-xs rounded border border-slate-800 bg-[#1E293B] hover:border-slate-700 text-slate-100 placeholder:text-slate-655 focus:outline-none focus:border-indigo-500 font-sans"

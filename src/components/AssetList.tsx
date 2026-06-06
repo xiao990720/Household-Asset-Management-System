@@ -46,6 +46,7 @@ export default function AssetList({ db, onSaveState, activeMemberId }: AssetList
   const [formCurrency, setFormCurrency] = useState("CNY");
   const [formRemark, setFormRemark] = useState("");
   const [formMaturityDate, setFormMaturityDate] = useState("");
+  const [formInterestRate, setFormInterestRate] = useState<number | "">("");
   const [formDate, setFormDate] = useState(() => {
     const today = new Date();
     return today.toISOString().split("T")[0];
@@ -146,6 +147,7 @@ export default function AssetList({ db, onSaveState, activeMemberId }: AssetList
     setFormCurrency("CNY");
     setFormRemark("");
     setFormMaturityDate("");
+    setFormInterestRate("");
     setFormDate(new Date().toISOString().split("T")[0]);
     setFormStockCode("");
     setFormShares("");
@@ -163,6 +165,7 @@ export default function AssetList({ db, onSaveState, activeMemberId }: AssetList
     setFormCurrency(asset.currency);
     setFormRemark(asset.remark);
     setFormMaturityDate(asset.maturityDate || "");
+    setFormInterestRate(asset.interestRate !== undefined ? asset.interestRate : "");
     setFormDate(asset.updatedAt);
     setFormStockCode(asset.stockCode || "");
     setFormShares(asset.shares !== undefined ? asset.shares : "");
@@ -178,8 +181,8 @@ export default function AssetList({ db, onSaveState, activeMemberId }: AssetList
       return;
     }
 
-    if (formType === "deposit" && !formMaturityDate) {
-      alert("定期存款科目必须填写到期时间！");
+    if ((formType === "deposit" || formType === "liability") && !formMaturityDate) {
+      alert(`${ASSET_TYPES[formType].label}科目必须填写到期时间！`);
       return;
     }
 
@@ -215,7 +218,10 @@ export default function AssetList({ db, onSaveState, activeMemberId }: AssetList
       currency: formCurrency,
       remark: formRemark.trim(),
       updatedAt: formDate || new Date().toISOString().split("T")[0],
-      ...(formType === "deposit" ? { maturityDate: formMaturityDate } : {}),
+      ...(formType === "deposit" || formType === "liability" ? { 
+        maturityDate: formMaturityDate,
+        interestRate: formInterestRate !== "" ? parseFloat(formInterestRate.toString()) : undefined
+      } : {}),
       ...(isStockOrEquity ? {
         stockCode: formStockCode.trim(),
         shares: parseFloat(formShares.toString()),
@@ -400,7 +406,7 @@ export default function AssetList({ db, onSaveState, activeMemberId }: AssetList
             </button>
           </div>
 
-          <form onSubmit={handleSaveAsset} className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+          <form onSubmit={handleSaveAsset} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
             {/* Asset Platform Name */}
             <div className="space-y-1">
               <label className="text-[10px] uppercase font-bold tracking-wider font-mono text-slate-400">资产所在平台 *</label>
@@ -551,9 +557,43 @@ export default function AssetList({ db, onSaveState, activeMemberId }: AssetList
               </div>
             )}
 
+            {/* Special Parameters Zone for Deposits and Mortgages - MOVED HIGHER */}
+            {(formType === "deposit" || formType === "liability") && (
+              <>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold tracking-wider font-mono text-amber-500 block">
+                    {formType === "deposit" ? "存款到期时间 *" : "贷款还清时间 *"}
+                  </label>
+                  <input
+                    id="input-asset-maturity-date"
+                    type="date"
+                    required
+                    value={formMaturityDate}
+                    onChange={(e) => setFormMaturityDate(e.target.value)}
+                    className="w-full px-2.5 py-1.5 text-xs rounded border border-amber-900 bg-slate-900 text-amber-200 focus:outline-none focus:border-amber-500 font-mono cursor-pointer"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold tracking-wider font-mono text-emerald-500 block">
+                    {formType === "deposit" ? "年化利率 (%)" : "房贷执行利率 (%)"}
+                  </label>
+                  <input
+                    id="input-asset-interest-rate"
+                    type="number"
+                    step="0.001"
+                    min="0"
+                    placeholder={formType === "liability" ? "例如: 3.2" : "例如: 2.75"}
+                    value={formInterestRate}
+                    onChange={(e) => setFormInterestRate(e.target.value === "" ? "" : parseFloat(e.target.value))}
+                    className="w-full px-2.5 py-1.5 text-xs rounded border border-emerald-900 bg-slate-900 text-emerald-300 placeholder:text-emerald-900/50 focus:outline-none focus:border-emerald-500 font-mono"
+                  />
+                </div>
+              </>
+            )}
+
             {/* Update Date */}
             <div className="space-y-1">
-              <label className="text-[10px] uppercase font-bold tracking-wider font-mono text-slate-400">开账登记日期</label>
+              <label className="text-[10px] uppercase font-bold tracking-wider font-mono text-slate-400">开账/登记日期</label>
               <input
                 id="input-asset-date"
                 type="date"
@@ -563,32 +603,16 @@ export default function AssetList({ db, onSaveState, activeMemberId }: AssetList
               />
             </div>
 
-            {/* Conditional Maturity Date for Deposit */}
-            {formType === "deposit" && (
-              <div className="space-y-1 animate-fade-in">
-                <label className="text-[10px] uppercase font-bold tracking-wider font-mono text-amber-400 block">到期时间 *</label>
-                <input
-                  id="input-asset-maturity-date"
-                  type="date"
-                  required
-                  value={formMaturityDate}
-                  onChange={(e) => setFormMaturityDate(e.target.value)}
-                  className="w-full px-2.5 py-1.5 text-xs rounded border border-amber-600 bg-slate-900 text-amber-200 focus:outline-none focus:border-amber-500 font-mono cursor-pointer"
-                />
-              </div>
-            )}
-
-            {/* Custom Notes / Remark */}
-            <div className={`${formType === "deposit" ? "md:col-span-3" : "md:col-span-1"} space-y-1`}>
+            <div className={`${(formType === "deposit" || formType === "liability") ? "md:col-span-2 lg:col-span-3" : "md:col-span-1"} space-y-1`}>
               <label className="text-[10px] uppercase font-bold tracking-wider font-mono text-slate-400">
-                备注等项目 {formType === "deposit" && <span className="text-amber-400">(定期存款推荐详记)</span>}
+                备注等项目 {(formType === "deposit" || formType === "liability") && <span className="text-amber-400">({ASSET_TYPES[formType].label}推荐详记)</span>}
               </label>
               <input
                 id="input-asset-remark"
                 type="text"
                 value={formRemark}
                 onChange={(e) => setFormRemark(e.target.value)}
-                placeholder={formType === "deposit" ? "例如：建设银行三年期大额存单，存期利率2.75%，或者特定到期事项" : "补充输入辅助识别，例如：账号末4位、币种兑换或特殊标记"}
+                placeholder={(formType === "deposit" || formType === "liability") ? `例如：${formType === "liability" ? 'XX银行还清时间、公积金组合贷款比例、利率变动模式等' : '建设银行三年期大额存单，存期利率2.75%等'}` : "辅助识别记录，例如账号末位、币种兑换等"}
                 className="w-full px-2.5 py-1.5 text-xs rounded border border-slate-800 bg-slate-900 hover:border-slate-700 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 font-sans"
               />
             </div>
@@ -709,9 +733,16 @@ export default function AssetList({ db, onSaveState, activeMemberId }: AssetList
                       <td className="py-2.5 px-3">
                         <div className="font-bold text-slate-200">{asset.name}</div>
                         {asset.maturityDate && (
-                          <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-950/40 border border-amber-900/35 text-amber-400 text-[10px] font-bold mt-1 font-mono">
-                            <Calendar className="w-3 h-3 text-amber-500 opacity-80" />
-                            <span>到期时间: {asset.maturityDate}</span>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-950/40 border border-amber-900/35 text-amber-400 text-[10px] font-bold font-mono">
+                              <Calendar className="w-3 h-3 text-amber-500 opacity-80" />
+                              <span>到期: {asset.maturityDate}</span>
+                            </div>
+                            {asset.interestRate !== undefined && (
+                              <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-950/40 border border-emerald-900/35 text-emerald-400 text-[10px] font-bold font-mono">
+                                <span>利率: {asset.interestRate}%</span>
+                              </div>
+                            )}
                           </div>
                         )}
                         {asset.stockCode && (

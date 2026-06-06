@@ -1,0 +1,11 @@
+services:
+  asset-manager:
+    build: .
+    container_name: family-asset-manager
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
