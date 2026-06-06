@@ -1,20 +1,12 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
-
-# Run and deploy your AI Studio app
-
-This contains everything you need to run your app locally.
-
-View your app in AI Studio: https://ai.studio/apps/ec585d47-8b5b-4e31-825f-aa074d4274e0
-
-## Run Locally
-
-**Prerequisites:**  Node.js
 
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+# 这是一个家庭资产管理系统
+<img width="1276" height="677" alt="image" src="https://github.com/user-attachments/assets/23942f4d-226f-48d0-926a-c50ec73d9ae1" />
+
+可以基于各种不同的资产进行管理
+<img width="212" height="296" alt="image" src="https://github.com/user-attachments/assets/51a7c1ea-9f6b-43cb-9010-cdbf955a2905" />
+
+## 使用 docker 进行部署
+
+
+## 本程序是使用 Google ai studio 撰写
